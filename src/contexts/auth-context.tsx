@@ -1,0 +1,1 @@
+//TODO: manejar un login falso, conectado al localStorage para que diga cuándo está conectado o no (session)
