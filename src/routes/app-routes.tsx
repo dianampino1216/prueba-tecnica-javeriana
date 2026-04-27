@@ -1,18 +1,20 @@
 import { BrowserRouter, Route, Routes } from "react-router";
-import { TestingPage } from "../pages/testing-page";
-import { TestingPage2 } from "../pages/testing-page2";
+import { Home } from "../pages/home-page";
+import { ProgramasPage } from "../pages/programs-page";
+import { DetalleProgramaPage } from "../pages/detail-program-page";
+import { AdminLeadsPage } from "../pages/admin-leads-page";
 
 // App use react-router to handle routing in the application
 export default function AppRoutes() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<TestingPage />} />
-        <Route path="testing" element={<TestingPage2 />} />
-        {/* <Route path="movie/:movieId" element={<MovieDetailView />} />
-        <Route path="tv-shows" element={<TvShowsView />} />
-        <Route path="tv-show/:tvShowId" element={<TvShowDetailView />} />
-        <Route path="*" element={<NotFoundView />} /> */}
+        <Route path="/" element={<Home />} />
+        <Route path="/programas" element={<ProgramasPage />} />
+        <Route path="/programa/:id" element={<DetalleProgramaPage />} />
+        <Route path="/admin" element={<AdminLeadsPage />} />
+
+        <Route path="*" element={<Home />} />
       </Routes>
     </BrowserRouter>
   );
