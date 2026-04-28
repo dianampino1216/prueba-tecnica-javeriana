@@ -1,6 +1,6 @@
 import { Link } from 'react-router';
 import type { Programa } from '../types';
-import { ChevronRightIcon } from '../assets/svg-icons';
+import { ChevronRightIcon } from '../assets/icons';
 
 interface ProgramCardProps {
     program: Programa;

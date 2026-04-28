@@ -15,24 +15,21 @@ export const normalizeName = (text: string): string => {
         .join(' ');
 };
 
-// Usamos Omit<Lead, 'id' | 'fecha_inscripcion'> porque al capturar el formulario
-// aún no tenemos el ID (lo generaremos) ni la fecha (la pondremos en el momento)
 export type LeadInputData = Omit<Lead, 'id' | 'fecha_inscripcion'>;
 
 export const normalizeLeadData = (data: LeadInputData): LeadInputData => {
     return {
         ...data,
-        // Normalizamos el nombre (Ej: "  juan   perez " -> "Juan Perez")
         nombre: normalizeName(data.nombre),
-
-        // Normalizamos el email (siempre en minúsculas y sin espacios)
         email: data.email.trim().toLowerCase(),
-
-        // El teléfono lo limpiamos de espacios o guiones que el usuario haya puesto por error
         telefono: data.telefono.replace(/\s+/g, '').replace(/-/g, ''),
-
-        // Para selects, usualmente un trim() es suficiente por si acaso
         programa_interes: data.programa_interes.trim(),
         facultad: data.facultad.trim(),
     };
+};
+
+// Eliminar tildes y caracteres diacríticos para las búsquedas
+export const removeAccents = (str: string): string => {
+    if (!str) return '';
+    return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
 };

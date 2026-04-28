@@ -1,5 +1,5 @@
 import { useUI } from '../../hooks/use-ui';
-import { SunIcon, MoonIcon } from '../../assets/svg-icons';
+import { SunIcon, MoonIcon } from '../../assets/icons';
 
 export const ThemeToggle = () => {
     const { theme, toggleTheme } = useUI();

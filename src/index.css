@@ -1,6 +1,5 @@
 @import "tailwindcss";
 
-/* 1. Definición del tema vinculando variables CSS a utilidades de Tailwind */
 @theme {
   /* Colores de marca base */
   --color-puj-blue: #0033A0;
@@ -21,7 +20,6 @@
   --color-ring: var(--ring);
 }
 
-/* 2. Configuración de valores para Modo Claro */
 :root {
   --background: #ffffff;
   --foreground: #1a202c;
@@ -29,10 +27,9 @@
   --card: #ffffff;
   --card-foreground: #1a202c;
 
-  /* Nivel intermedio: fondos recesados dentro de una card */
   --surface: #f1f5f9;
 
-  --primary: #0033A0; /* PUJ Blue */
+  --primary: #0033A0;
   --primary-foreground: #ffffff;
 
   --muted: #f1f5f9;
@@ -44,31 +41,25 @@
   --radius: 0.75rem;
 }
 
-/* 3. Configuración de valores para Modo Oscuro (Se activa con la clase .dark) */
 .dark {
   --background: #0f172a;
   --foreground: #f1f5f9;
 
-  /* Cards elevadas sobre el fondo */
   --card: #1e293b;
   --card-foreground: #f1f5f9;
 
-  /* Nivel recesado dentro de cards (distinto de --card) */
   --surface: #0d1424;
 
-  --primary: #60a5fa; /* blue-400: más legible que blue-500 sobre oscuro */
+  --primary: #60a5fa; 
   --primary-foreground: #0f172a;
 
-  /* Elevado sobre card para cabeceras de tabla, nav secundario y hovers */
   --muted: #263347;
   --muted-foreground: #a8b8cc;
 
-  /* Borde más visible */
   --border: #3d5068;
   --ring: #38bdf8;
 }
 
-/* 4. Aplicación de estilos base */
 @layer base {
   * {
     @apply border-border transition-colors duration-300;

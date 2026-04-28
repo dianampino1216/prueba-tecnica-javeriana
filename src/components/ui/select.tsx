@@ -1,5 +1,5 @@
 import { type SelectHTMLAttributes, forwardRef } from 'react';
-import { ChevronDownIcon } from '../../assets/svg-icons';
+import { ChevronDownIcon } from '../../assets/icons';
 
 interface Option {
   value: string;

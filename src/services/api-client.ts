@@ -1,6 +1,10 @@
 const API_URL = import.meta.env.VITE_MOCKAROO_API_URL;
 const API_KEY = import.meta.env.VITE_MOCKAROO_API_KEY;
 
+if (!API_URL || !API_KEY) {
+  console.error('[ApiClient] Missing env variables: VITE_MOCKAROO_API_URL and/or VITE_MOCKAROO_API_KEY');
+}
+
 export async function apiClient<T>(endpoint: string, options?: RequestInit): Promise<T> {
   try {
     const response = await fetch(`${API_URL}/${endpoint}`, {

@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router';
 import logoJaveriana from "../../assets/logo-javeriana.png";
-import { ChevronDownIcon } from '../../assets/svg-icons';
+import { ChevronDownIcon } from '../../assets/icons';
 import { facultades } from '../../constants';
 
 interface NavbarProps {

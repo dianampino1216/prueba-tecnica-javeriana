@@ -6,18 +6,16 @@ import type { Programa } from '../types';
 import { Select } from '../components/ui/select';
 import { Input } from '../components/ui/input';
 import { Navbar } from '../components/ui/navbar';
+import { removeAccents } from '../utils/normalizer';
 
 export const ProgramasPage = () => {
-    // Agregamos setSearchParams para poder limpiar la URL si es necesario
     const [searchParams, setSearchParams] = useSearchParams();
     const [programas, setProgramas] = useState<Programa[]>([]);
     const [loading, setLoading] = useState(true);
 
-    // Leer qué nos pide la URL
     const paramFacultad = searchParams.get('facultad');
     const paramTipo = searchParams.get('tipo') || '';
 
-    // Estados para la barra de filtros
     const [searchTerm, setSearchTerm] = useState('');
 
     useEffect(() => {
@@ -34,15 +32,13 @@ export const ProgramasPage = () => {
         loadProgramas();
     }, []);
 
-    // Lógica de filtrado combinada e inteligente
     const filteredProgramas = useMemo(() => {
         return programas.filter((prog) => {
-            // 1. Filtro por Facultad
             const matchFacultad = paramFacultad ? prog.facultad === paramFacultad : true;
 
             let matchTipo = true;
-            if (paramTipo) { // <-- CAMBIO AQUÍ
-                const tipoFiltro = paramTipo.toLowerCase().trim(); // <-- CAMBIO AQUÍ
+            if (paramTipo) { 
+                const tipoFiltro = paramTipo.toLowerCase().trim(); 
                 const tipoPrograma = (prog.tipo_programa || '').toLowerCase().trim();
 
                 if (tipoFiltro === 'posgrado') {
@@ -52,7 +48,7 @@ export const ProgramasPage = () => {
                 }
             }
 
-            const matchSearch = prog.nombre.toLowerCase().includes(searchTerm.toLowerCase());
+            const matchSearch = removeAccents(prog.nombre.toLowerCase()).includes(removeAccents(searchTerm.toLowerCase()));
 
             return matchFacultad && matchTipo && matchSearch;
         });

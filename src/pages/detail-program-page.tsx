@@ -1,5 +1,5 @@
 import { useEffect, useState, useMemo } from 'react';
-import { CheckCircleIcon } from '../assets/svg-icons';
+import { CheckCircleIcon } from '../assets/icons';
 import { useParams, useNavigate } from 'react-router';
 import { programasService } from '../services/programs-service';
 import { useLeadsStorage } from '../hooks/use-lead-storage';
@@ -76,7 +76,6 @@ export const DetalleProgramaPage = () => {
 
         if (success) {
             setSubmitted(true);
-            setTimeout(() => navigate('/'), 3000);
         }
     };
 

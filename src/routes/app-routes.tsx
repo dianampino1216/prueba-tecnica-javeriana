@@ -3,6 +3,7 @@ import { Home } from "../pages/home-page";
 import { ProgramasPage } from "../pages/programs-page";
 import { DetalleProgramaPage } from "../pages/detail-program-page";
 import { AdminLeadsPage } from "../pages/admin-leads-page";
+import { Footer } from "../components/ui/footer";
 
 // App use react-router to handle routing in the application
 export default function AppRoutes() {
@@ -16,6 +17,7 @@ export default function AppRoutes() {
 
         <Route path="*" element={<Home />} />
       </Routes>
+      <Footer />
     </BrowserRouter>
   );
 }

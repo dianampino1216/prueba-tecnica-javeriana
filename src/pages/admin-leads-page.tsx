@@ -1,5 +1,5 @@
 import { useState, useMemo, useEffect, type FormEvent } from 'react';
-import { CheckCircleIcon } from '../assets/svg-icons';
+import { CheckCircleIcon } from '../assets/icons';
 import { useLeadsStorage } from '../hooks/use-lead-storage';
 import { leadsService } from '../services/leads-service';
 import { programasService } from '../services/programs-service';
@@ -10,9 +10,8 @@ import { Input } from '../components/ui/input';
 import { Select } from '../components/ui/select';
 import { Modal } from '../components/ui/modal';
 import { validateJaverianaEmail } from '../utils/validators';
-import { normalizeLeadData, type LeadInputData } from '../utils/normalizer';
+import { normalizeLeadData, type LeadInputData, removeAccents } from '../utils/normalizer';
 import type { Lead, Programa } from '../types';
-import { facultades } from '../constants';
 
 const EMPTY_FORM = {
     nombre: '',
@@ -24,6 +23,13 @@ const EMPTY_FORM = {
     programa_interes: '',
     facultad: '',
 };
+
+const OPCIONES_TIPO_PROGRAMA = [
+    { value: '', label: 'Todos los tipos' },
+    { value: 'Pregrado', label: 'Pregrado' },
+    { value: 'Posgrado', label: 'Posgrado' },
+    { value: 'Educación Continua', label: 'Educación Continua' }
+];
 
 export const AdminLeadsPage = () => {
     const { leads: localLeads, addLead } = useLeadsStorage();
@@ -42,30 +48,32 @@ export const AdminLeadsPage = () => {
         fetchData();
     }, []);
 
-    // Estados para filtros
     const [searchTerm, setSearchTerm] = useState('');
-    const [filterFacultad, setFilterFacultad] = useState('');
+    const [filterTipoPrograma, setFilterTipoPrograma] = useState('');
     const [selectedLead, setSelectedLead] = useState<Lead | null>(null);
 
-    // Estados para formulario de nuevo lead
     const [isFormOpen, setIsFormOpen] = useState(false);
     const [formData, setFormData] = useState(EMPTY_FORM);
     const [emailError, setEmailError] = useState<string | null>(null);
     const [formSuccess, setFormSuccess] = useState(false);
-    const [formFacultadFilter, setFormFacultadFilter] = useState('');
+    const [formTipoProgramaFilter, setFormTipoProgramaFilter] = useState('');
 
-    const facultadesUnicas = useMemo(
-        () => [...new Set(programas.map(p => p.facultad))].sort(),
-        [programas]
-    );
+    const programasFiltrados = useMemo(() => {
+        if (!formTipoProgramaFilter) return programas;
 
-    const programasFiltrados = useMemo(
-        () => formFacultadFilter ? programas.filter(p => p.facultad === formFacultadFilter) : programas,
-        [programas, formFacultadFilter]
-    );
+        return programas.filter(prog => {
+            const tipoPrograma = (prog.tipo_programa || '').toLowerCase().trim();
+            const filtro = formTipoProgramaFilter.toLowerCase().trim();
 
-    const handleFacultadFormChange = (facultad: string) => {
-        setFormFacultadFilter(facultad);
+            if (filtro === 'posgrado') {
+                return ['posgrado', 'maestría', 'maestria', 'especialización', 'especializacion', 'doctorado'].includes(tipoPrograma);
+            }
+            return removeAccents(tipoPrograma) === removeAccents(filtro);
+        });
+    }, [programas, formTipoProgramaFilter]);
+
+    const handleTipoProgramaFormChange = (tipo: string) => {
+        setFormTipoProgramaFilter(tipo);
         setFormData(prev => ({ ...prev, programa_interes: '', facultad: '' }));
     };
 
@@ -107,30 +115,39 @@ export const AdminLeadsPage = () => {
         setFormData(EMPTY_FORM);
         setEmailError(null);
         setFormSuccess(false);
-        setFormFacultadFilter('');
+        setFormTipoProgramaFilter('');
     };
 
-    // 2. Unimos, filtramos y ORDENAMOS (Más nuevos primero)
     const allLeadsSorted = useMemo(() => {
-        // Unimos ambas listas
         const combined = [...localLeads, ...serviceLeads];
+        const normalizedSearch = removeAccents(searchTerm.toLowerCase());
 
-        // Filtramos según la búsqueda del usuario
         const filtered = combined.filter(lead => {
             const matchesSearch =
-                lead.nombre.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                lead.email.toLowerCase().includes(searchTerm.toLowerCase());
-            const matchesFacultad = filterFacultad ? lead.facultad === filterFacultad : true;
-            return matchesSearch && matchesFacultad;
+                removeAccents(lead.nombre.toLowerCase()).includes(normalizedSearch) ||
+                removeAccents(lead.email.toLowerCase()).includes(normalizedSearch);
+            
+            let matchesTipoPrograma = true;
+            if (filterTipoPrograma) {
+                const progRelacionado = programas.find(p => p.nombre === lead.programa_interes);
+                const tipoPrograma = progRelacionado ? (progRelacionado.tipo_programa || '').toLowerCase().trim() : '';
+                const filtro = filterTipoPrograma.toLowerCase().trim();
+
+                if (filtro === 'posgrado') {
+                    matchesTipoPrograma = ['posgrado', 'maestría', 'maestria', 'especialización', 'especializacion', 'doctorado'].includes(tipoPrograma);
+                } else {
+                    matchesTipoPrograma = removeAccents(tipoPrograma) === removeAccents(filtro);
+                }
+            }
+            
+            return matchesSearch && matchesTipoPrograma;
         });
 
-        // Ordenamos por fecha descendente (lo más reciente arriba)
         return filtered.sort((a, b) =>
             new Date(b.fecha_inscripcion).getTime() - new Date(a.fecha_inscripcion).getTime()
         );
-    }, [localLeads, serviceLeads, searchTerm, filterFacultad]);
+    }, [localLeads, serviceLeads, searchTerm, filterTipoPrograma, programas]);
 
-    // Definición de Columnas
     const columns: Column<Lead>[] = [
         {
             header: 'Fecha',
@@ -164,7 +181,6 @@ export const AdminLeadsPage = () => {
             <Navbar isSecondMenu={false} />
 
             <main className="w-full max-w-360 mx-auto px-6 py-10 space-y-8">
-                {/* Cabecera y Estadísticas */}
                 <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
                     <div>
                         <h1 className="text-3xl font-black text-puj-blue uppercase">Gestión de Aspirantes</h1>
@@ -182,7 +198,6 @@ export const AdminLeadsPage = () => {
                     </div>
                 </div>
 
-                {/* Filtros */}
                 <div className="bg-card p-6 rounded-xl shadow-sm border border-border flex flex-col md:flex-row gap-4 items-end">
                     <div className="flex-1 w-full">
                         <Input
@@ -194,18 +209,15 @@ export const AdminLeadsPage = () => {
                     </div>
                     <div className="w-full md:w-64">
                         <Select
-                            label="Filtrar por Facultad"
-                            value={filterFacultad}
-                            onChange={(e) => setFilterFacultad(e.target.value)}
-                             options={[
-                                { value: '', label: 'Todas las facultades' },
-                                ...facultades.map(f => ({ value: f, label: f }))
-                            ]}
+                            label="Tipo de Programa"
+                            value={filterTipoPrograma}
+                            onChange={(e) => setFilterTipoPrograma(e.target.value)}
+                            options={OPCIONES_TIPO_PROGRAMA}
                         />
                     </div>
                     <Button
                         variant="outline"
-                        onClick={() => { setSearchTerm(''); setFilterFacultad(''); }}
+                        onClick={() => { setSearchTerm(''); setFilterTipoPrograma(''); }}
                         className="h-10.5"
                     >
                         Limpiar
@@ -265,13 +277,10 @@ export const AdminLeadsPage = () => {
                         />
 
                         <Select
-                            label="Facultad (opcional)"
-                            value={formFacultadFilter}
-                            onChange={e => handleFacultadFormChange(e.target.value)}
-                            options={[
-                                { value: '', label: 'Todas las facultades' },
-                                ...facultadesUnicas.map(f => ({ value: f, label: f }))
-                            ]}
+                            label="Tipo de Programa (opcional)"
+                            value={formTipoProgramaFilter}
+                            onChange={e => handleTipoProgramaFormChange(e.target.value)}
+                            options={OPCIONES_TIPO_PROGRAMA}
                         />
 
                         <Select
