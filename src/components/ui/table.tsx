@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react';
 
-// El accessor puede ser una llave del objeto (ej: 'nombre') o una función para renderizar algo a medida (ej: un botón)
+// Accessor can be an object key or a render function for custom cell content
 export interface Column<T> {
   header: string;
   accessor: keyof T | ((row: T) => ReactNode);

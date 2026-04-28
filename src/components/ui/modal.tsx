@@ -10,7 +10,7 @@ interface ModalProps {
 }
 
 export const Modal = ({ isOpen, onClose, title, children }: ModalProps) => {
-  // Cerrar con Escape
+  // Close on Escape key
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === 'Escape') {
@@ -40,7 +40,6 @@ export const Modal = ({ isOpen, onClose, title, children }: ModalProps) => {
         onClick={(e) => e.stopPropagation()} 
         className="relative w-full max-w-lg bg-card rounded-2xl shadow-2xl flex flex-col max-h-[90vh] animate-in fade-in zoom-in-95 duration-200 border border-border"
       >
-        {/* Cabecera */}
         <div className="flex items-center justify-between p-5 border-b border-border">
           {title && (
             <h2 className="text-xl font-bold text-primary">
@@ -56,7 +55,6 @@ export const Modal = ({ isOpen, onClose, title, children }: ModalProps) => {
           </button>
         </div>
 
-        {/* Contenido */}
         <div className="p-5 overflow-y-auto text-foreground">
           {children}
         </div>

@@ -122,7 +122,6 @@ export const ProgramasPage = () => {
                 </div>
             </div>
 
-            {/* Grilla de Resultados */}
             <main className="w-full max-w-360 mx-auto px-6 py-12">
                 {filteredProgramas.length === 0 ? (
                     <div className="text-center py-20 space-y-4">

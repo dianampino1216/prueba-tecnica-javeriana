@@ -1,6 +1,6 @@
 import type { Lead } from '../types';
 
-//Normalizar un texto
+// Normalize text to title case
 export const normalizeName = (text: string): string => {
     if (!text) return '';
 
@@ -28,7 +28,7 @@ export const normalizeLeadData = (data: LeadInputData): LeadInputData => {
     };
 };
 
-// Eliminar tildes y caracteres diacríticos para las búsquedas
+// Strip accents and diacritics for accent-insensitive search
 export const removeAccents = (str: string): string => {
     if (!str) return '';
     return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "");

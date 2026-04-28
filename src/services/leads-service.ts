@@ -1,6 +1,7 @@
 import type { Lead } from '../types';
 import { apiClient } from './api-client';
 
+// Fallback data used when the API is unavailable
 const MOCK_LEADS: Lead[] = [
     {
         id: 'mock-1',

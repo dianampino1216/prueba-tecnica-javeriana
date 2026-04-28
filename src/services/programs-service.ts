@@ -2,7 +2,7 @@
 import type { Programa } from '../types';
 import { apiClient } from './api-client';
 
-// Datos de rescate por si la API falla o nos quedamos sin cuota
+// Fallback data used when the API is unavailable or quota is exceeded
 const FALLBACK_PROGRAMAS: Programa[] = [
   { id: '1', nombre: 'Arquitectura', tipo_programa: 'Pregrado', facultad: 'Facultad de Arquitectura y Diseño', descripcion: 'Programa académico enfocado en el diseño y construcción de espacios sostenibles.', url_detalle: 'https://www.javeriana.edu.co/carrera-arquitectura', imagen_url: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=500&q=80' },
   { id: '2', nombre: 'Química Farmacéutica', tipo_programa: 'Pregrado', facultad: 'Facultad de Ciencias', descripcion: 'Diseño, desarrollo y control de calidad de medicamentos y cosméticos.', url_detalle: 'https://www.javeriana.edu.co/carrera-quimica-farmaceutica', imagen_url: 'https://images.unsplash.com/photo-1587854692152-cbe660dbde88?auto=format&fit=crop&w=500&q=80' },
