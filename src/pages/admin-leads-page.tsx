@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect, type FormEvent } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { CheckCircleIcon } from '../assets/icons';
 import { useLeadsStorage } from '../hooks/use-lead-storage';
 import { leadsService } from '../services/leads-service';
@@ -30,6 +30,9 @@ const OPCIONES_TIPO_PROGRAMA = [
     { value: 'Posgrado', label: 'Posgrado' },
     { value: 'Educación Continua', label: 'Educación Continua' }
 ];
+
+const soloLetras = (val: string) => val.replace(/[^a-zA-ZáéíóúüñÁÉÍÓÚÜÑ\s]/g, '');
+const soloNumeros = (val: string) => val.replace(/[^0-9]/g, '');
 
 export const AdminLeadsPage = () => {
     const { leads: localLeads, addLead } = useLeadsStorage();
@@ -86,7 +89,7 @@ export const AdminLeadsPage = () => {
         }));
     };
 
-    const handleFormSubmit = (e: FormEvent) => {
+    const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         setEmailError(null);
 
@@ -154,7 +157,19 @@ export const AdminLeadsPage = () => {
             accessor: (row) => new Date(row.fecha_inscripcion).toLocaleDateString()
         },
         { header: 'Nombre Completo', accessor: 'nombre' },
-        { header: 'Programa de Interés', accessor: 'programa_interes' },
+        {
+            header: 'Programa de Interés',
+            accessor: (row) => (
+                <div className="space-y-1">
+                    <span className="block">{row.programa_interes}</span>
+                    {row.evento_inscrito && (
+                        <span className="inline-block text-xs bg-puj-gold/20 text-puj-gold px-2 py-0.5 rounded-full font-bold uppercase tracking-wide">
+                            Evento
+                        </span>
+                    )}
+                </div>
+            )
+        },
         {
             header: 'Email',
             accessor: (row) => (
@@ -245,13 +260,12 @@ export const AdminLeadsPage = () => {
                         </div>
                         <h3 className="text-xl font-bold text-puj-blue">¡Aspirante registrado!</h3>
                         <p className="text-muted-foreground mt-2 text-sm">El registro ha sido guardado correctamente.</p>
-                        <Button className="mt-6" onClick={handleCloseForm}>Cerrar</Button>
                     </div>
                 ) : (
                     <form onSubmit={handleFormSubmit} className="space-y-4">
                         <div className="grid grid-cols-2 gap-4">
-                            <Input label="Nombre" required value={formData.nombre} onChange={e => setFormData({ ...formData, nombre: e.target.value })} />
-                            <Input label="Apellidos" required value={formData.apellidos} onChange={e => setFormData({ ...formData, apellidos: e.target.value })} />
+                            <Input label="Nombre" required value={formData.nombre} onChange={e => setFormData({ ...formData, nombre: soloLetras(e.target.value) })} />
+                            <Input label="Apellidos" required value={formData.apellidos} onChange={e => setFormData({ ...formData, apellidos: soloLetras(e.target.value) })} />
                         </div>
 
                         <div className="grid grid-cols-2 gap-4">
@@ -262,10 +276,10 @@ export const AdminLeadsPage = () => {
                                 onChange={e => setFormData({ ...formData, tipo_documento: e.target.value })}
                                 options={[{ value: 'CC', label: 'CC' }, { value: 'TI', label: 'TI' }, { value: 'CE', label: 'CE' }]}
                             />
-                            <Input label="Documento" required value={formData.documento} onChange={e => setFormData({ ...formData, documento: e.target.value })} />
+                            <Input label="Documento" required value={formData.documento} onChange={e => setFormData({ ...formData, documento: soloNumeros(e.target.value) })} />
                         </div>
 
-                        <Input label="Teléfono" type="tel" required value={formData.telefono} onChange={e => setFormData({ ...formData, telefono: e.target.value })} />
+                        <Input label="Teléfono" type="tel" required value={formData.telefono} onChange={e => setFormData({ ...formData, telefono: soloNumeros(e.target.value) })} />
 
                         <Input
                             label="E-mail Institucional"
@@ -340,10 +354,19 @@ export const AdminLeadsPage = () => {
                         </div>
 
                         <div className="space-y-2">
-                            <h4 className="text-xs font-bold text-muted-foreground uppercase">Programa de Interés</h4>
+                            <h4 className="text-xs font-bold text-muted-foreground uppercase">
+                                {selectedLead.evento_inscrito ? 'Evento de Inscripción' : 'Programa de Interés'}
+                            </h4>
                             <div className="bg-surface border border-border p-3 rounded-md">
                                 <p className="font-bold text-puj-blue">{selectedLead.programa_interes}</p>
-                                <p className="text-xs text-puj-cyan font-semibold uppercase">{selectedLead.facultad}</p>
+                                {selectedLead.facultad && (
+                                    <p className="text-xs text-puj-cyan font-semibold uppercase">{selectedLead.facultad}</p>
+                                )}
+                                {selectedLead.evento_inscrito && (
+                                    <span className="mt-2 inline-block text-xs bg-puj-gold/20 text-puj-gold px-2 py-0.5 rounded-full font-bold uppercase tracking-wide">
+                                        Inscripción a evento
+                                    </span>
+                                )}
                             </div>
                         </div>
 

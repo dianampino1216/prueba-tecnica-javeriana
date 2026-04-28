@@ -1,16 +1,71 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import type { Programa, Evento } from '../types';
 import { programasService } from '../services/programs-service';
 import { eventosService } from '../services/events-service';
 import { ProgramCard } from '../components/program-card';
+import { useLeadsStorage } from '../hooks/use-lead-storage';
+import { validateJaverianaEmail } from '../utils/validators';
+import { normalizeLeadData } from '../utils/normalizer';
+import { Modal } from '../components/ui/modal';
+import { Button } from '../components/ui/button';
+import { Input } from '../components/ui/input';
+import { CheckCircleIcon } from '../assets/icons';
 
 import campus from '../assets/hero-campus.jpg';
 import { Navbar } from '../components/ui/navbar';
+
+const EMPTY_INSCRIPCION = { nombre: '', email: '', telefono: '' };
+const soloLetras = (val: string) => val.replace(/[^a-zA-ZáéíóúüñÁÉÍÓÚÜÑ\s]/g, '');
+const soloNumeros = (val: string) => val.replace(/[^0-9]/g, '');
 
 export const Home = () => {
     const [eventos, setEventos] = useState<Evento[]>([]);
     const [destacados, setDestacados] = useState<Programa[]>([]);
     const [loading, setLoading] = useState(true);
+
+    const { addLead } = useLeadsStorage();
+    const [eventoSeleccionado, setEventoSeleccionado] = useState<Evento | null>(null);
+    const [inscripcionForm, setInscripcionForm] = useState(EMPTY_INSCRIPCION);
+    const [inscripcionEmailError, setInscripcionEmailError] = useState<string | null>(null);
+    const [inscripcionSuccess, setInscripcionSuccess] = useState(false);
+
+    const handleAbrirInscripcion = (evento: Evento) => {
+        setEventoSeleccionado(evento);
+        setInscripcionForm(EMPTY_INSCRIPCION);
+        setInscripcionEmailError(null);
+        setInscripcionSuccess(false);
+    };
+
+    const handleCerrarInscripcion = () => {
+        setEventoSeleccionado(null);
+        setInscripcionForm(EMPTY_INSCRIPCION);
+        setInscripcionEmailError(null);
+        setInscripcionSuccess(false);
+    };
+
+    const handleInscripcionSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        setInscripcionEmailError(null);
+
+        const validation = validateJaverianaEmail(inscripcionForm.email);
+        if (!validation.isValid) {
+            setInscripcionEmailError(validation.errorMessage);
+            return;
+        }
+
+        const success = addLead(normalizeLeadData({
+            nombre: inscripcionForm.nombre,
+            email: inscripcionForm.email,
+            telefono: inscripcionForm.telefono,
+            programa_interes: eventoSeleccionado!.nombre,
+            facultad: '',
+            tipo_documento: 'CC',
+            documento: 'N/A',
+            evento_inscrito: eventoSeleccionado!.nombre,
+        }));
+
+        if (success) setInscripcionSuccess(true);
+    };
 
     useEffect(() => {
         const loadData = async () => {
@@ -38,6 +93,7 @@ export const Home = () => {
     );
 
     return (
+        <>
         <div className="min-h-screen bg-background text-foreground w-full flex flex-col overflow-x-hidden">
             <Navbar isSecondMenu={true}/>
 
@@ -83,18 +139,30 @@ export const Home = () => {
                         <div className="bg-card p-10 rounded-2xl border-t-8 border-puj-blue shadow-sm border">
                             <h3 className="text-2xl font-bold text-primary mb-8 uppercase tracking-wider">Próximos Eventos</h3>
                             <div className="space-y-8">
-                                {eventos.map((evento) => (
-                                    <div key={evento.id} className="flex gap-6 items-start group cursor-pointer">
-                                        <div className="bg-puj-blue text-white p-3 rounded-lg text-center min-w-17.5 group-hover:bg-puj-gold group-hover:text-puj-blue transition-colors shadow-lg">
-                                            <span className="block text-xs font-bold">ABR</span>
-                                            <span className="block text-2xl font-black">28</span>
+                                {eventos.map((evento) => {
+                                    const fecha = new Date(evento.fecha);
+                                    const mes = fecha.toLocaleString('es-CO', { month: 'short' }).toUpperCase();
+                                    const dia = fecha.getDate();
+                                    return (
+                                        <div key={evento.id} className="flex gap-4 items-start group">
+                                            <div className="bg-puj-blue text-white p-3 rounded-lg text-center min-w-17.5 group-hover:bg-puj-gold group-hover:text-puj-blue transition-colors shadow-lg shrink-0">
+                                                <span className="block text-xs font-bold">{mes}</span>
+                                                <span className="block text-2xl font-black">{dia}</span>
+                                            </div>
+                                            <div className="flex-1 min-w-0">
+                                                <h4 className="font-bold text-lg leading-snug group-hover:text-primary transition-colors">{evento.nombre}</h4>
+                                                <p className="text-sm text-muted-foreground mt-1">Modalidad Presencial</p>
+                                                <Button
+                                                    size="sm"
+                                                    className="mt-3"
+                                                    onClick={() => handleAbrirInscripcion(evento)}
+                                                >
+                                                    Inscribirse
+                                                </Button>
+                                            </div>
                                         </div>
-                                        <div>
-                                            <h4 className="font-bold text-lg leading-snug group-hover:text-primary transition-colors">{evento.nombre}</h4>
-                                            <p className="text-sm text-muted-foreground mt-1">Modalidad Presencial</p>
-                                        </div>
-                                    </div>
-                                ))}
+                                    );
+                                })}
                             </div>
                         </div>
                     </aside>
@@ -102,5 +170,51 @@ export const Home = () => {
                 </div>
             </main>
         </div>
+
+        <Modal
+            isOpen={!!eventoSeleccionado}
+            onClose={handleCerrarInscripcion}
+            title={eventoSeleccionado ? `Inscribirse: ${eventoSeleccionado.nombre}` : ''}
+        >
+            {inscripcionSuccess ? (
+                <div className="text-center py-10 animate-in zoom-in duration-500">
+                    <div className="w-16 h-16 bg-puj-gold/20 text-puj-gold rounded-full flex items-center justify-center mx-auto mb-4">
+                        <CheckCircleIcon className="w-8 h-8" />
+                    </div>
+                    <h3 className="text-xl font-bold text-puj-blue">¡Inscripción exitosa!</h3>
+                    <p className="text-muted-foreground mt-2 text-sm">Tu registro al evento ha sido guardado correctamente.</p>
+                </div>
+            ) : (
+                <form onSubmit={handleInscripcionSubmit} className="space-y-4">
+                    <p className="text-sm text-muted-foreground">Completa tus datos para inscribirte al evento.</p>
+                    <Input
+                        label="Nombre completo"
+                        required
+                        value={inscripcionForm.nombre}
+                        onChange={e => setInscripcionForm({ ...inscripcionForm, nombre: soloLetras(e.target.value) })}
+                    />
+                    <Input
+                        label="Email Institucional"
+                        type="email"
+                        required
+                        error={inscripcionEmailError ?? undefined}
+                        value={inscripcionForm.email}
+                        onChange={e => setInscripcionForm({ ...inscripcionForm, email: e.target.value })}
+                    />
+                    <Input
+                        label="Teléfono"
+                        type="tel"
+                        required
+                        value={inscripcionForm.telefono}
+                        onChange={e => setInscripcionForm({ ...inscripcionForm, telefono: soloNumeros(e.target.value) })}
+                    />
+                    <div className="flex justify-end gap-3 pt-2">
+                        <Button type="button" variant="outline" onClick={handleCerrarInscripcion}>Cancelar</Button>
+                        <Button type="submit">Confirmar Inscripción</Button>
+                    </div>
+                </form>
+            )}
+        </Modal>
+        </>
     );
 };

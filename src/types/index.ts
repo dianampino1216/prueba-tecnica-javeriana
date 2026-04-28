@@ -25,4 +25,5 @@ export interface Lead {
   programa_interes: string;
   facultad: string;
   fecha_inscripcion: string;
+  evento_inscrito?: string;
 }
