@@ -5,7 +5,6 @@ import type { LeadInputData } from '../utils/normalizer';
 const LEADS_STORAGE_KEY = 'javeriana_leads';
 
 export const useLeadsStorage = () => {
-  // Asegurar que localStorage.getItem solo se ejecute la primera vez que el componente se renderiza
   const [leads, setLeads] = useState<Lead[]>(() => {
     try {
       const item = window.localStorage.getItem(LEADS_STORAGE_KEY);
@@ -27,12 +26,10 @@ export const useLeadsStorage = () => {
       };
 
       const updatedLeads = [...leads, newLead];
-      setLeads(updatedLeads);
-      
-      // Persistencia
       window.localStorage.setItem(LEADS_STORAGE_KEY, JSON.stringify(updatedLeads));
-      
-      return true; 
+      setLeads(updatedLeads);
+
+      return true;
     } catch (error) {
       console.error('Error al guardar en localStorage:', error);
       return false; 

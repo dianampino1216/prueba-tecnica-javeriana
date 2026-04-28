@@ -129,7 +129,7 @@ export const AdminLeadsPage = () => {
             const matchesSearch =
                 removeAccents(lead.nombre.toLowerCase()).includes(normalizedSearch) ||
                 removeAccents(lead.email.toLowerCase()).includes(normalizedSearch);
-            
+
             let matchesTipoPrograma = true;
             if (filterTipoPrograma) {
                 const progRelacionado = programas.find(p => p.nombre === lead.programa_interes);
@@ -142,7 +142,7 @@ export const AdminLeadsPage = () => {
                     matchesTipoPrograma = removeAccents(tipoPrograma) === removeAccents(filtro);
                 }
             }
-            
+
             return matchesSearch && matchesTipoPrograma;
         });
 
@@ -182,7 +182,10 @@ export const AdminLeadsPage = () => {
                 <Button
                     variant="ghost"
                     size="sm"
-                    onClick={() => setSelectedLead(row)}
+                    onClick={(e) => {
+                        e.stopPropagation();
+                        setSelectedLead(row);
+                    }}
                     className="text-primary font-bold underline"
                 >
                     Ver detalle
@@ -328,29 +331,31 @@ export const AdminLeadsPage = () => {
                                 <h4 className="text-xs font-bold text-muted-foreground uppercase">Aspirante</h4>
                                 <p className="text-lg font-bold text-primary">{selectedLead.nombre}</p>
                             </div>
-                            <div>
-                                <h4 className="text-xs font-bold text-muted-foreground uppercase">Identificación</h4>
-                                <p className="text-foreground/80">{selectedLead.tipo_documento}: {selectedLead.documento}</p>
-                            </div>
+                            {selectedLead.documento && (
+                                <div>
+                                    <h4 className="text-xs font-bold text-muted-foreground uppercase">Identificación</h4>
+                                    <p className="text-foreground/80">{selectedLead.tipo_documento}: {selectedLead.documento}</p>
+                                </div>
+                            )}
                         </div>
 
                         <div className="p-4 bg-surface rounded-lg space-y-4">
                             <h4 className="text-sm font-bold text-puj-blue">Datos de Contacto</h4>
                             <div className="space-y-1">
                                 <p className="text-sm"><strong>Email:</strong> {selectedLead.email}</p>
-                                <p className="text-sm"><strong>Teléfono:</strong> {selectedLead.telefono}</p>
+                                <p className="text-sm"><strong>Teléfono:</strong> {selectedLead.telefono || 'No registrado'}</p>
                             </div>
 
-                            <a
-                                href={`https://wa.me/${selectedLead.telefono.replace(/\+/g, '').replace(/\s+/g, '')}`}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="block"
-                            >
-                                <Button fullWidth className="bg-[#25D366] hover:bg-[#128C7E] text-white border-none shadow-md">
+                            {selectedLead.telefono && (
+                                <a
+                                    href={`https://wa.me/${String(selectedLead.telefono).replace(/\+/g, '').replace(/\s+/g, '')}`}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="flex items-center justify-center w-full px-4 py-2 text-sm font-bold text-white transition-colors duration-200 rounded-lg shadow-md bg-[#13ac4b] hover:bg-[#128C7E] focus:outline-none"
+                                >
                                     Contactar por WhatsApp
-                                </Button>
-                            </a>
+                                </a>
+                            )}
                         </div>
 
                         <div className="space-y-2">
