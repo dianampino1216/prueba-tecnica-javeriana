@@ -55,7 +55,7 @@ export const ProgramasPage = () => {
     }, [programas, paramFacultad, searchTerm, paramTipo]);
 
     const pageTitle = paramFacultad
-        ? `Programas de la Facultad de ${paramFacultad}`
+        ? `Programas de la ${paramFacultad}`
         : paramTipo
             ? `Nuestra Oferta de ${paramTipo}`
             : 'Explorar Oferta Académica';
