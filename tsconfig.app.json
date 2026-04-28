@@ -21,6 +21,6 @@
     "erasableSyntaxOnly": true,
     "noFallthroughCasesInSwitch": true
   },
-  "include": ["src", "rstest.setup.ts", "rstest.config.ts"],
+  "include": ["src"],
   "exclude": ["src/__tests__"]
 }

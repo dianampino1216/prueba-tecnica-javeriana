@@ -1,8 +1,10 @@
 import { defineConfig } from '@rstest/core';
 
 export default defineConfig({
-  tsconfigPath: './tsconfig.test.json',
   name: 'prueba-tecnica-javerina',
+  source: {
+    tsconfigPath: './tsconfig.test.json',
+  },
   testEnvironment: 'happy-dom',
   globals: true,
   include: ['src/**/*.{test,spec}.{ts,tsx}'],
