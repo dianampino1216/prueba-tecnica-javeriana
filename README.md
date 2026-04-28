@@ -21,7 +21,7 @@ Presento mi solución para la prueba técnica de Desarrollo Frontend. Este proye
 ### 1. Clonar el repositorio
 
 ```bash
-git clone https://github.com/dianampino/prueba-tecnica-javeriana.git
+git clone https://github.com/dianampino1216/prueba-tecnica-javeriana.git
 cd prueba-tecnica-javeriana
 ```
 
