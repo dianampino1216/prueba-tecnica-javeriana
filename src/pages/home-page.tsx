@@ -83,7 +83,7 @@ export const Home = () => {
                         <div className="bg-card p-10 rounded-2xl border-t-8 border-puj-blue shadow-sm border">
                             <h3 className="text-2xl font-bold text-primary mb-8 uppercase tracking-wider">Próximos Eventos</h3>
                             <div className="space-y-8">
-                                {eventos.slice(0, 3).map((evento) => (
+                                {eventos.map((evento) => (
                                     <div key={evento.id} className="flex gap-6 items-start group cursor-pointer">
                                         <div className="bg-puj-blue text-white p-3 rounded-lg text-center min-w-17.5 group-hover:bg-puj-gold group-hover:text-puj-blue transition-colors shadow-lg">
                                             <span className="block text-xs font-bold">ABR</span>
@@ -96,9 +96,6 @@ export const Home = () => {
                                     </div>
                                 ))}
                             </div>
-                            <button className="w-full mt-10 py-4 border-2 border-primary text-primary font-bold rounded-lg hover:bg-primary hover:text-primary-foreground transition-all">
-                                Ver Calendario Completo
-                            </button>
                         </div>
                     </aside>
 
