@@ -60,7 +60,7 @@ export const Home = () => {
             programa_interes: eventoSeleccionado!.nombre,
             facultad: '',
             tipo_documento: 'CC',
-            documento: 'N/A',
+            documento: '',
             evento_inscrito: eventoSeleccionado!.nombre,
         }));
 
@@ -87,8 +87,12 @@ export const Home = () => {
     }, []);
 
     if (loading) return (
-        <div className="min-h-screen flex items-center justify-center bg-background">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-puj-blue"></div>
+        <div className="min-h-screen flex flex-col items-center justify-center gap-4 bg-background">
+            <div className="relative h-12 w-12">
+                <div className="absolute inset-0 rounded-full border-4 border-muted" />
+                <div className="absolute inset-0 animate-spin rounded-full border-4 border-transparent border-t-puj-blue" />
+            </div>
+            <p className="text-sm text-muted-foreground font-medium tracking-wide">Cargando contenido...</p>
         </div>
     );
 
@@ -97,19 +101,20 @@ export const Home = () => {
         <div className="min-h-screen bg-background text-foreground w-full flex flex-col overflow-x-hidden">
             <Navbar isSecondMenu={true}/>
 
-            <section className="relative w-full h-137.5 overflow-hidden">
+            <section className="relative w-full h-85 sm:h-105 md:h-130 lg:h-137.5 overflow-hidden">
                 <img
                     src={campus}
                     alt="Campus Javeriana"
                     className="w-full h-full object-cover transform scale-105 hover:scale-100 transition-transform duration-[5s]"
                 />
-                <div className="absolute inset-0 bg-linear-to-r from-puj-blue/80 to-transparent flex items-center">
-                    <div className="w-full mx-auto px-6">
-                        <div className="max-w-2xl text-white space-y-4">
-                            <h2 className="text-6xl md:text-8xl font-black leading-none drop-shadow-2xl">
-                                Transforma <br /> <span className="text-puj-gold">tu futuro</span>
+                <div className="absolute inset-0 bg-linear-to-r from-puj-blue/85 via-puj-blue/50 to-transparent flex items-center">
+                    <div className="w-full max-w-360 mx-auto px-5 sm:px-8">
+                        <div className="max-w-xl text-white space-y-4 sm:space-y-5">
+                            <h2 className="text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-black leading-[1.05] drop-shadow-xl">
+                                Transforma <br />
+                                <span className="text-puj-gold">tu futuro</span>
                             </h2>
-                            <p className="text-xl md:text-2xl font-light border-l-4 border-puj-gold pl-6 py-2 bg-black/10 backdrop-blur-sm">
+                            <p className="text-base sm:text-xl md:text-2xl font-light border-l-4 border-puj-gold pl-5 py-1.5 bg-black/10 backdrop-blur-sm">
                                 Excelencia académica con sello Javeriano
                             </p>
                         </div>
@@ -117,15 +122,15 @@ export const Home = () => {
                 </div>
             </section>
 
-            <main className="w-full mx-auto px-6 py-20">
-                <div className="grid grid-cols-1 lg:grid-cols-12 gap-16">
+            <main className="w-full max-w-360 mx-auto px-4 sm:px-6 py-12 sm:py-16 lg:py-20">
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16">
 
                     <div className="lg:col-span-8">
-                        <div className="flex items-center justify-between mb-12">
-                            <h3 className="text-4xl font-black text-primary uppercase">
+                        <div className="flex items-center justify-between mb-8 sm:mb-12">
+                            <h3 className="text-2xl sm:text-3xl lg:text-4xl font-black text-primary uppercase">
                                 Programas <span className="text-muted-foreground font-light">Destacados</span>
                             </h3>
-                            <div className="h-1 w-24 bg-puj-gold"></div>
+                            <div className="h-1 w-16 sm:w-24 bg-puj-gold shrink-0"></div>
                         </div>
 
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-10">

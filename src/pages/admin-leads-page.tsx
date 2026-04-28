@@ -198,19 +198,19 @@ export const AdminLeadsPage = () => {
         <div className="min-h-screen bg-background flex flex-col">
             <Navbar isSecondMenu={false} />
 
-            <main className="w-full max-w-360 mx-auto px-6 py-10 space-y-8">
-                <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+            <main className="w-full max-w-360 mx-auto px-4 sm:px-6 py-8 sm:py-10 space-y-6 sm:space-y-8">
+                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 sm:gap-6">
                     <div>
-                        <h1 className="text-3xl font-black text-puj-blue uppercase">Gestión de Aspirantes</h1>
-                        <p className="text-muted-foreground">Administra los aspirantes de la base de datos y de registros locales.</p>
+                        <h1 className="text-2xl sm:text-3xl font-black text-puj-blue uppercase">Gestión de Aspirantes</h1>
+                        <p className="text-muted-foreground text-sm sm:text-base mt-0.5">Administra los aspirantes de la base de datos y de registros locales.</p>
                     </div>
 
-                    <div className="flex gap-4 items-stretch">
-                        <div className="bg-card px-4 py-0 h-16 rounded-xl shadow-sm border-l-4 border-puj-blue border min-w-20 flex flex-col justify-center">
-                            <span className="text-xs text-muted-foreground font-bold uppercase">Total</span>
-                            <p className="text-2xl font-black text-puj-blue">{allLeadsSorted.length}</p>
+                    <div className="flex gap-3 sm:gap-4 items-stretch self-start sm:self-auto">
+                        <div className="bg-card px-4 py-0 h-14 sm:h-16 rounded-xl shadow-sm border-l-4 border-puj-blue border min-w-16 sm:min-w-20 flex flex-col justify-center">
+                            <span className="text-[10px] sm:text-xs text-muted-foreground font-bold uppercase">Total</span>
+                            <p className="text-xl sm:text-2xl font-black text-puj-blue">{allLeadsSorted.length}</p>
                         </div>
-                        <Button onClick={() => setIsFormOpen(true)} className="h-16 px-6">
+                        <Button onClick={() => setIsFormOpen(true)} className="h-14 sm:h-16 px-4 sm:px-6 text-sm sm:text-base">
                             + Registrar Aspirante
                         </Button>
                     </div>

@@ -85,22 +85,25 @@ export const DetalleProgramaPage = () => {
         <div className="min-h-screen bg-background pb-20 flex flex-col">
             <Navbar />
 
-            <div className="w-full h-100 relative">
-                <img src={programa.imagen_url || campusImage} className="w-full h-full object-cover" alt={programa.nombre} onError={(e) => {
-                    e.currentTarget.src = campusImage;
-                }} />
-                <div className="absolute inset-0 bg-puj-blue/70 flex items-center">
-                    <div className="max-w-360 mx-auto px-6 w-full text-white">
-                        <h1 className="text-5xl font-black mb-2">{programa.nombre}</h1>
-                        <p className="text-xl font-light text-puj-gold">{programa.facultad}</p>
+            <div className="w-full h-55 sm:h-75 md:h-95 lg:h-105 relative">
+                <img
+                    src={programa.imagen_url || campusImage}
+                    className="w-full h-full object-cover"
+                    alt={programa.nombre}
+                    onError={(e) => { e.currentTarget.src = campusImage; }}
+                />
+                <div className="absolute inset-0 bg-linear-to-r from-puj-blue/80 via-puj-blue/60 to-puj-blue/30 flex items-end pb-8 sm:pb-10 md:items-center md:pb-0">
+                    <div className="max-w-360 mx-auto px-4 sm:px-6 w-full text-white">
+                        <h1 className="text-2xl sm:text-4xl md:text-5xl font-black mb-1.5 leading-tight">{programa.nombre}</h1>
+                        <p className="text-sm sm:text-lg md:text-xl font-medium text-puj-gold">{programa.facultad}</p>
                     </div>
                 </div>
             </div>
 
-            <div className="max-w-360 mx-auto px-6 mt-12 w-full grid grid-cols-1 lg:grid-cols-3 gap-12">
-                <div className="lg:col-span-2 space-y-6">
-                    <h2 className="text-3xl font-bold text-primary border-b border-border pb-4">Acerca del Programa</h2>
-                    <p className="text-lg text-foreground/80 leading-relaxed">{programa.descripcion}</p>
+            <div className="max-w-360 mx-auto px-4 sm:px-6 mt-8 sm:mt-12 w-full grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-12">
+                <div className="lg:col-span-2 space-y-5">
+                    <h2 className="text-2xl sm:text-3xl font-bold text-primary border-b border-border pb-4">Acerca del Programa</h2>
+                    <p className="text-base sm:text-lg text-foreground/80 leading-relaxed">{programa.descripcion}</p>
                 </div>
 
                 <div className="bg-card p-8 rounded-2xl shadow-xl border-t-8 border-puj-gold border h-fit sticky top-24">
